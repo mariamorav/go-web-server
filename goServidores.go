@@ -16,12 +16,17 @@ func main() {
 		"https://instagram.com",
 	}
 
-	for _, server := range servers {
-		go serverReview(server, canal)
-	}
+	i := 0
 
-	for i := 0; i < len(servers); i++ {
+	for i < len(servers) {
+
+		for _, server := range servers {
+			go serverReview(server, canal)
+		}
+		time.Sleep(1 * time.Second)
 		fmt.Println(<-canal)
+		i++
+
 	}
 
 	pastTime := time.Since(inicio)
@@ -31,10 +36,8 @@ func main() {
 func serverReview(server string, canal chan string) {
 	_, err := http.Get(server)
 	if err != nil {
-		fmt.Println(server, "server is not available")
-		canal <- server + " server is not available"
+		canal <- server + "- server is not available"
 	} else {
-		fmt.Println(server, "is working")
-		canal <- server + "server is working"
+		canal <- server + "- server is working"
 	}
 }
